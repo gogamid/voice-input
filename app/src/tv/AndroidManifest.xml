@@ -12,7 +12,7 @@
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="org.futo.voiceinput.tv.TvVoiceLaunchActivity" android:exported="true" android:theme="@android:style/Theme.NoDisplay" android:excludeFromRecents="true">
+        <activity android:name="org.futo.voiceinput.tv.TvVoiceLaunchActivity" android:exported="true" android:theme="@android:style/Theme.NoDisplay" android:excludeFromRecents="true" android:taskAffinity="">
             <intent-filter>
                 <action android:name="android.speech.action.WEB_SEARCH" />
                 <category android:name="android.intent.category.DEFAULT" />
