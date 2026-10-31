@@ -1,0 +1,6 @@
+<voice-interaction-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:sessionService="org.futo.voiceinput.tv.TvVoiceSessionService"
+    android:recognitionService="org.futo.voiceinput.tv.TvRecognitionService"
+    android:supportsAssist="true"
+    android:supportsLaunchFromKeyguard="false"
+    android:supportsLocalInteraction="false" />

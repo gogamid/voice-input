@@ -6,10 +6,18 @@ See [LICENSE.md](LICENSE.md) for the terms governing this software.
 
 ## Status
 
-The initial milestone is a cloud-built ARM32 APK with unchanged recognition and
-recording logic. Direct USB audio, remote-button activation, and a TV-specific
-dictation panel are **not implemented yet**. The initial APK still uses Android's
-normal microphone path; it must not be presented as a working remote-mic fix.
+The cloud-built ARM32 baseline passed. The TV source now includes direct USB
+capture, a voice-only input panel, a setup/test screen, and a native assistant
+entry point for the waveform button. Device verification is in progress; these
+features must not be described as working until tested on the actual TV.
+
+The stock recording activity and IME are disabled in this variant. TV dictation
+does not open `AudioRecord` and never falls back to the built-in TV microphone.
+It checks microphone permission, AppOps (including the system privacy toggle),
+and microphone mute before opening USB, then rechecks privacy during capture.
+The recording AppOp is started/stopped around actual USB capture so Android can
+account for microphone use. Audio is buffered in RAM only, not written to disk
+or uploaded. Silence ends a session; recording is bounded to 20 seconds.
 
 ## Source and native-engine provenance
 
@@ -24,7 +32,9 @@ of substituting an unrelated engine or claiming a complete source build, CI
 verifies the official APK's checksum and embedded source revision, then extracts
 only its five ARM32 voice/transcription/ggml libraries. Java/Kotlin app code is
 compiled from this fork. The VAD library comes from the original public `libs`
-submodule. No TV recordings, settings backups, or private device data belong in
+submodule. Our small `tvusb` JNI capture library is built from source with the
+NDK; it neither replaces nor recompiles the transcription engine.
+No TV recordings, settings backups, or private device data belong in
 this repository or its CI artifacts.
 
 The nightly URL is mutable. If upstream replaces the APK, CI deliberately fails
@@ -49,3 +59,24 @@ Retain a secure backup: future APK updates must use the same key.
 Download `voice-input-tv-arm32-<run number>` from a successful workflow run.
 Artifacts include the signed APK, package/architecture inspection, and checksum.
 Build success alone does not establish USB microphone or remote-button support.
+
+## One-time TV setup
+
+Install the separately signed APK, enable `org.futo.voiceinput.tv/org.futo.voiceinput.tv.TvInputMethodService`,
+and grant its microphone permission. Open **Voice Input TV** to grant access to
+the USB receiver and select/download the small English model, or use the original
+FUTO settings for other models/languages and support/payment options.
+
+The native shortcut uses Android's assistant service, not an accessibility button
+mapper. It needs a one-time ADB grant of `android.permission.WRITE_SECURE_SETTINGS`
+to switch temporarily from the typing IME to the voice IME. Select
+`org.futo.voiceinput.tv/org.futo.voiceinput.tv.TvVoiceService` as the assistant/voice interaction service.
+The code uses that settings permission only for the default input method.
+It remembers the previous typing IME, restores it after dictation/cancellation,
+and rolls back a switch when no input view appears. Password fields are refused.
+
+Android must provide a focused editable field in its assist context. Applications
+that hide this context may not support the native shortcut; no-text-field launches
+must not start recording. No hotword listener is registered. The placeholder
+RecognitionService required by assistant metadata explicitly rejects general
+SpeechRecognizer requests rather than implicitly starting a microphone.

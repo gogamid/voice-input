@@ -1,5 +1,9 @@
 # FUTO Voice Input
 
+> **Unofficial TV fork:** this branch modifies FUTO's nightly for a USB-microphone
+> remote and Android TV. See [TV.md](TV.md) for build provenance, setup, and current
+> verification status. This is not an official FUTO release. Upstream README follows.
+
 FUTO Voice Input is an application that lets you do speech-to-text on Android, integrating with third party keyboards or apps that use the generic speech-to-text APIs.
 
 To download the application, visit the [FUTO Voice Input page](https://voiceinput.futo.org/). You can also find the contact there to report issues or suggestions.

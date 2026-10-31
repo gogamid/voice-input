@@ -175,6 +175,10 @@ android {
     sourceSets {
         if (tvBuild) {
             main.jniLibs.srcDir "$buildDir/tv-native"
+            dev.java.srcDir 'src/tv/java'
+            dev.res.srcDir 'src/tv/res'
+            dev.manifest.srcFile 'src/tv/AndroidManifest.xml'
+            testDev.java.srcDir 'src/tv/test'
         }
 
         dev {
@@ -240,12 +244,10 @@ android {
     }
 
     ndkVersion tvBuild ? '27.2.12479018' : '30.0.16248370'
-    if (!tvBuild) {
-        externalNativeBuild {
-            cmake {
-                path file('src/main/cpp/CMakeLists.txt')
-                version '3.22.1'
-            }
+    externalNativeBuild {
+        cmake {
+            path file(tvBuild ? 'src/tv/cpp/CMakeLists.txt' : 'src/main/cpp/CMakeLists.txt')
+            version '3.22.1'
         }
     }
 }

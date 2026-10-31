@@ -1,0 +1,28 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+    <uses-feature android:name="android.hardware.usb.host" android:required="true" />
+    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
+    <application android:label="Voice Input TV (unofficial)" tools:replace="android:label">
+        <!-- Disable stock recording entry points: the TV build must never fall back to AudioRecord. -->
+        <activity android:name="org.futo.voiceinput.RecognizeActivity" android:enabled="false" />
+        <service android:name="org.futo.voiceinput.VoiceInputMethodService" android:enabled="false" />
+        <activity android:name="org.futo.voiceinput.tv.TvSetupActivity" android:exported="true" android:screenOrientation="landscape" android:theme="@android:style/Theme.Material.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <service android:name="org.futo.voiceinput.tv.TvInputMethodService" android:exported="true" android:label="Voice Input TV · USB remote" android:permission="android.permission.BIND_INPUT_METHOD">
+            <intent-filter><action android:name="android.view.InputMethod" /></intent-filter>
+            <meta-data android:name="android.view.im" android:resource="@xml/input_method" />
+        </service>
+        <service android:name="org.futo.voiceinput.tv.TvVoiceService" android:exported="true" android:permission="android.permission.BIND_VOICE_INTERACTION">
+            <intent-filter><action android:name="android.service.voice.VoiceInteractionService" /></intent-filter>
+            <meta-data android:name="android.voice_interaction" android:resource="@xml/tv_voice_interaction" />
+        </service>
+        <service android:name="org.futo.voiceinput.tv.TvVoiceSessionService" android:exported="true" android:permission="android.permission.BIND_VOICE_INTERACTION" />
+        <service android:name="org.futo.voiceinput.tv.TvRecognitionService" android:exported="true" android:permission="android.permission.BIND_SPEECH_RECOGNITION_SERVICE">
+            <intent-filter><action android:name="android.speech.RecognitionService" /></intent-filter>
+        </service>
+    </application>
+</manifest>
