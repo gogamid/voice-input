@@ -54,7 +54,7 @@ class TvDictation(private val context: Context) {
             Vad.builder().setModel(Model.WEB_RTC_GMM).setMode(Mode.VERY_AGGRESSIVE)
                 .setFrameSize(FrameSize.FRAME_SIZE_480).setSampleRate(SampleRate.SAMPLE_RATE_16K)
                 .setSpeechDurationMs(150).setSilenceDurationMs(300).build().use { vad ->
-                    status("Listening · USB remote only\nSpeak near the remote. OK: finish · Back: cancel")
+                    status("Listening · USB remote only\nSpeak near the remote. Waveform again: finish · Back: cancel")
                     while (!finish.get()) {
                         currentCoroutineContext().ensureActive()
                         val now = SystemClock.elapsedRealtime()

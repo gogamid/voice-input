@@ -85,3 +85,22 @@ On the tested TCL firmware, `KEYCODE_VOICE_ASSIST` launches
 `android.speech.action.WEB_SEARCH`, not the configured assistant. A no-display
 activity handles that native intent and asks the selected TV voice service to
 collect the underlying editor's assist context. It does not record by itself.
+
+## Runtime validation (2026-10-31)
+
+Signed ARM32 build 7 was installed on the tested TCL. Injecting the receiver's
+mapped Android key (`231`, VOICE_ASSIST) opened USB dictation in a separate
+temporary editor app without bringing setup forward. Password fields and a
+screen with no selected editor did not start capture; Gboard stayed selected.
+A second waveform-key event stopped capture early. Back restored Gboard.
+The no-speech timeout closed recording after approximately eight seconds.
+AppOps showed recording ended, rather than remaining active in the background.
+Enabling system microphone privacy prevented capture and showed Android's
+unblock prompt; camera privacy was left enabled. The temporary editor app was
+removed after validation.
+
+Remote OK did not finish capture in this test, so the listening instructions
+say to press the waveform key again instead. The physical waveform button,
+spoken transcription, and insertion into real TV applications still require
+user validation. Injected key events do not verify the remote's transmission
+or microphone gating behavior.
