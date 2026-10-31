@@ -2,5 +2,5 @@
     android:sessionService="org.futo.voiceinput.tv.TvVoiceSessionService"
     android:recognitionService="org.futo.voiceinput.tv.TvRecognitionService"
     android:supportsAssist="true"
-    android:supportsLaunchFromKeyguard="false"
+    android:supportsLaunchVoiceAssistFromKeyguard="false"
     android:supportsLocalInteraction="false" />
