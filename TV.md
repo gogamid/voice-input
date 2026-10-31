@@ -62,7 +62,7 @@ Build success alone does not establish USB microphone or remote-button support.
 
 ## One-time TV setup
 
-Install the separately signed APK, enable `org.futo.voiceinput.tv/org.futo.voiceinput.tv.TvInputMethodService`,
+Install the separately signed APK, enable `org.futo.voiceinput.tv/.TvInputMethodService`,
 and grant its microphone permission. Open **Voice Input TV** to grant access to
 the USB receiver and select/download the small English model, or use the original
 FUTO settings for other models/languages and support/payment options.
@@ -70,7 +70,7 @@ FUTO settings for other models/languages and support/payment options.
 The native shortcut uses Android's assistant service, not an accessibility button
 mapper. It needs a one-time ADB grant of `android.permission.WRITE_SECURE_SETTINGS`
 to switch temporarily from the typing IME to the voice IME. Select
-`org.futo.voiceinput.tv/org.futo.voiceinput.tv.TvVoiceService` as the assistant/voice interaction service.
+`org.futo.voiceinput.tv/.TvVoiceService` as the assistant/voice interaction service.
 The code uses that settings permission only for the default input method.
 It remembers the previous typing IME, restores it after dictation/cancellation,
 and rolls back a switch when no input view appears. Password fields are refused.

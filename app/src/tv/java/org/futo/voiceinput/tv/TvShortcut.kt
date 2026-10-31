@@ -1,6 +1,7 @@
 package org.futo.voiceinput.tv
 
 import android.Manifest
+import android.content.ComponentName
 import android.content.Context
 import android.content.pm.PackageManager
 import android.inputmethodservice.InputMethodService
@@ -11,7 +12,7 @@ import android.view.inputmethod.InputMethodManager
 
 /** Switches temporarily to the voice-only IME; Gboard remains the typing IME. */
 object TvShortcut {
-    fun imeId(context: Context) = "${context.packageName}/${TvInputMethodService::class.java.name}"
+    fun imeId(context: Context) = ComponentName(context, TvInputMethodService::class.java).flattenToShortString()
 
     fun start(context: Context) {
         check(context.checkSelfPermission(Manifest.permission.WRITE_SECURE_SETTINGS) == PackageManager.PERMISSION_GRANTED) {
