@@ -6,6 +6,9 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.compose'
 }
 
+// The TV build reuses the engine from the matching official nightly APK because
+// its transcribe.cpp submodule is not publicly accessible. See TV.md.
+def tvBuild = providers.gradleProperty('tvPrebuiltNative').isPresent()
 
 def getVersionCode = { ->
     def envCode = System.getenv('VERSION_CODE')
@@ -66,9 +69,13 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
-        externalNativeBuild {
-            cmake {
-                cppFlags '-O3'
+        if (tvBuild) {
+            ndk { abiFilters 'armeabi-v7a' }
+        } else {
+            externalNativeBuild {
+                cmake {
+                    cppFlags '-O3'
+                }
             }
         }
     }
@@ -155,8 +162,8 @@ android {
 
         dev {
             dimension "version"
-            versionNameSuffix "-dev"
-            applicationIdSuffix ".dev"
+            versionNameSuffix tvBuild ? '-tv-dev' : '-dev'
+            applicationIdSuffix tvBuild ? '.tv' : '.dev'
         }
 
         devSameId {
@@ -166,9 +173,13 @@ android {
     }
 
     sourceSets {
+        if (tvBuild) {
+            main.jniLibs.srcDir "$buildDir/tv-native"
+        }
+
         dev {
-            // Include update checking for testing
-            java.srcDir 'src/withUpdateChecking/java'
+            // Official updates cannot replace a separately signed TV fork.
+            java.srcDir tvBuild ? 'src/withoutUpdateChecking/java' : 'src/withUpdateChecking/java'
 
             // Include only the payments directories, not the dummy directories, to compile both billing methods
             java.srcDir 'src/playStoreBilling/java/org/futo/voiceinput/payments'
@@ -228,11 +239,13 @@ android {
         }
     }
 
-    ndkVersion '30.0.16248370'
-    externalNativeBuild {
-        cmake {
-            path file('src/main/cpp/CMakeLists.txt')
-            version '3.22.1'
+    ndkVersion tvBuild ? '27.2.12479018' : '30.0.16248370'
+    if (!tvBuild) {
+        externalNativeBuild {
+            cmake {
+                path file('src/main/cpp/CMakeLists.txt')
+                version '3.22.1'
+            }
         }
     }
 }
