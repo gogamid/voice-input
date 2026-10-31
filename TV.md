@@ -80,3 +80,8 @@ that hide this context may not support the native shortcut; no-text-field launch
 must not start recording. No hotword listener is registered. The placeholder
 RecognitionService required by assistant metadata explicitly rejects general
 SpeechRecognizer requests rather than implicitly starting a microphone.
+
+On the tested TCL firmware, `KEYCODE_VOICE_ASSIST` launches
+`android.speech.action.WEB_SEARCH`, not the configured assistant. A no-display
+activity handles that native intent and asks the selected TV voice service to
+collect the underlying editor's assist context. It does not record by itself.

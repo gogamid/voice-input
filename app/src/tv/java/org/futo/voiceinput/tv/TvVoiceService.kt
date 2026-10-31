@@ -1,5 +1,6 @@
 package org.futo.voiceinput.tv
 
+import android.app.Activity
 import android.app.assist.AssistContent
 import android.app.assist.AssistStructure
 import android.content.Context
@@ -15,7 +16,29 @@ import android.speech.SpeechRecognizer
 import android.widget.Toast
 
 /** Native assistant entry point only. No hotword detector or background audio. */
-class TvVoiceService : VoiceInteractionService()
+class TvVoiceService : VoiceInteractionService() {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent?.action == "org.futo.voiceinput.tv.REMOTE_VOICE_SEARCH") {
+            // Let the no-display launcher finish before Android collects the
+            // underlying editor's assist context, rather than the launcher itself.
+            Handler(Looper.getMainLooper()).postDelayed({
+                if (isActiveService(this, android.content.ComponentName(this, TvVoiceService::class.java))) {
+                    showSession(null, VoiceInteractionSession.SHOW_WITH_ASSIST)
+                }
+            }, 200)
+        }
+        return START_NOT_STICKY
+    }
+}
+
+/** TCL sends WEB_SEARCH for KEYCODE_VOICE_ASSIST instead of launching assist. */
+class TvVoiceLaunchActivity : Activity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        startService(Intent(this, TvVoiceService::class.java).setAction("org.futo.voiceinput.tv.REMOTE_VOICE_SEARCH"))
+        finish()
+    }
+}
 
 class TvVoiceSessionService : VoiceInteractionSessionService() {
     override fun onNewSession(args: Bundle?): VoiceInteractionSession = TvVoiceSession(this)
